@@ -47,6 +47,8 @@ class Calendar extends Component {
     markingType: PropTypes.string,
     /** Hide month navigation arrows. Default = false */
     hideArrows: PropTypes.bool,
+    hideLeftArrow: PropTypes.bool,
+    hideRightArrow: PropTypes.bool,
     /** Display loading indicador. Default = false */
     displayLoadingIndicator: PropTypes.bool,
     /** Do not show days of other months in month page. Default = false */
@@ -86,7 +88,11 @@ class Calendar extends Component {
     this.style = styleConstructor(this.props.theme);
     
     this.state = {
-      currentMonth: props.current ? parseDate(props.current) : XDate()
+      currentMonth: props.current ? parseDate(props.current) : XDate(),
+        hideLeftArrow:props.hideLeftArrow,
+        hideRightArrow:props.hideRightArrow,
+        maxMonth:parseDate(props.maxDate).toString('yyyy-MM'),
+        minMonth:parseDate(props.minDate).toString('yyyy-MM'),
     };
 
     this.updateMonth = this.updateMonth.bind(this);
@@ -96,7 +102,7 @@ class Calendar extends Component {
     this.shouldComponentUpdate = shouldComponentUpdate;
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const current = parseDate(nextProps.current);
     if (current && current.toString('yyyy MM') !== this.state.currentMonth.toString('yyyy MM')) {
       this.setState({
@@ -110,7 +116,9 @@ class Calendar extends Component {
       return;
     }
     this.setState({
-      currentMonth: day.clone()
+        currentMonth: day.clone(),
+        hideRightArrow: day.toString('yyyy-MM') >= this.state.maxMonth,
+        hideLeftArrow: day.toString('yyyy-MM') <= this.state.minMonth,
     }, () => {
       if (!doNotTriggerListeners) {
         const currMont = this.state.currentMonth.clone();
@@ -262,6 +270,8 @@ class Calendar extends Component {
           style={this.props.headerStyle}
           theme={this.props.theme}
           hideArrows={this.props.hideArrows}
+          hideLeftArrow={this.state.hideLeftArrow}
+          hideRightArrow={this.state.hideRightArrow}
           month={this.state.currentMonth}
           addMonth={this.addMonth}
           showIndicator={indicator}
