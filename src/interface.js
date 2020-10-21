@@ -9,12 +9,14 @@ function padNumber(n) {
 
 function xdateToData(xdate) {
   const dateString = xdate.toString('yyyy-MM-dd');
+  const deStr = xdate.toString('dd-MM-yyyy');
   return {
     year: xdate.getFullYear(),
     month: xdate.getMonth() + 1,
     day: xdate.getDate(),
     timestamp: XDate(dateString, true).getTime(),
-    dateString: dateString
+    dateString: dateString,
+	  deStr: deStr
   };
 }
 
